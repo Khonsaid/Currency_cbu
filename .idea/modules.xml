@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/valyuta_kurslari/valyuta_kurslari.iml" filepath="$PROJECT_DIR$/valyuta_kurslari/valyuta_kurslari.iml" />
+      <module fileurl="file://$PROJECT_DIR$/valyuta_kurslari/android/valyuta_kurslari_android.iml" filepath="$PROJECT_DIR$/valyuta_kurslari/android/valyuta_kurslari_android.iml" />
+    </modules>
+  </component>
+</project>
