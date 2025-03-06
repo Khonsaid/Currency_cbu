@@ -4,7 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:valyuta_kurslari/bloc/main/main_bloc.dart';
 import 'package:valyuta_kurslari/screen/main_screen.dart';
 
-void main() {
+import 'data/source/locel/hive_helper.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveHelper.init();
+
   runApp(const MyApp());
 }
 

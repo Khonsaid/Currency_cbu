@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:valyuta_kurslari/data/source/locel/hive_helper.dart';
 
 import '../../data/source/remote/response/currency_response.dart';
 
@@ -6,7 +7,7 @@ part 'calculate_event.dart';
 part 'calculate_state.dart';
 
 class CalculateBloc extends Bloc<CalculateEvent, CalculateState> {
-  CalculateBloc() : super(CalculateState()) {
+  CalculateBloc() : super(CalculateState(lang: HiveHelper.get())) {
     on<SelectedDataEvent>((event, emit) {
       emit(state.copyWith(selectedData: event.data, convertedSum: '0', inputSum: '0'));
     });
@@ -18,8 +19,6 @@ class CalculateBloc extends Bloc<CalculateEvent, CalculateState> {
     });
 
     on<InputSumEvent>((event, emit) {
-      print('TTT input ${event.sum}');
-
       if (event.sum.isEmpty) {
         emit(state.copyWith(inputSum: event.sum, convertedSum: '0'));
       } else {
@@ -34,13 +33,16 @@ class CalculateBloc extends Bloc<CalculateEvent, CalculateState> {
         // Natijani formatlaymiz
         String formattedSum = '';
 
-        if (convertedSum.abs() < 0.000001) {  // Juda kichik sonlar uchun (0.000001 dan kichik)
+        if (convertedSum.abs() < 0.000001) {
+          // Juda kichik sonlar uchun (0.000001 dan kichik)
           // Ilmiy formatda ko'rsatamiz (masalan: 1e-7)
           formattedSum = convertedSum.toStringAsExponential(6);
-        } else if (convertedSum.abs() < 1) { // 1 dan kichik sonlar uchun
+        } else if (convertedSum.abs() < 1) {
+          // 1 dan kichik sonlar uchun
           // Muhim raqamlarni saqlab qolamiz
           formattedSum = convertedSum.toStringAsPrecision(6);
-        } else {  // Oddiy sonlar uchun
+        } else {
+          // Oddiy sonlar uchun
           // Kerakli o'nlik kasrlar sonini aniqlaymiz
           formattedSum = convertedSum.toStringAsFixed(_getAppropriateDecimals(convertedSum));
         }

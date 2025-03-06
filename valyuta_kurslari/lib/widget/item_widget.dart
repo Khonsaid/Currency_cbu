@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:valyuta_kurslari/data/source/remote/response/currency_response.dart';
 import 'package:valyuta_kurslari/design/colors.dart';
+import 'package:valyuta_kurslari/util/extensions.dart';
 
 import '../data/data/currency_data.dart';
 
@@ -54,7 +55,7 @@ class ItemWidget extends StatelessWidget {
                       ),
                       Spacer(),
                       Text(
-                        "${data.rate} UZS",
+                        "${data.rate?.formatToMoney(currency: ' UZS')}",
                         style: TextStyle(
                             color: AppColors.fontPrimary, fontWeight: FontWeight.w700, fontSize: 15),
                       ),
@@ -70,7 +71,7 @@ class ItemWidget extends StatelessWidget {
                       ),
                       Spacer(),
                       Text(
-                        "${data.diff}%",
+                        "${(!data.diff!.startsWith('-') && data.diff != '0') ? '+' : ''}${data.diff}%",
                         style: TextStyle(
                             color: AppColors.fontSecondary, fontWeight: FontWeight.w500, fontSize: 14),
                       ),
@@ -78,8 +79,14 @@ class ItemWidget extends StatelessWidget {
                       Icon(
                         data.diff?.startsWith('-') ?? false
                             ? Icons.trending_down_outlined
-                            : Icons.trending_up_outlined,
-                        color: data.diff?.startsWith('-') ?? false ? Colors.red : Colors.green,
+                            : data.diff! == '0'
+                                ? Icons.remove
+                                : Icons.trending_up_outlined,
+                        color: data.diff?.startsWith('-') ?? false
+                            ? Colors.red
+                            : data.diff! == '0'
+                                ? AppColors.fontPrimary
+                                : Colors.green,
                       )
                     ],
                   )

@@ -17,11 +17,7 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<MainBloc, MainState>(
-      listener: (context, state) {
-        print(state.data?.first.toString());
-        print(state.data?.first.ccy?.toLowerCase());
-      },
+    return BlocBuilder<MainBloc, MainState>(
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -116,7 +112,6 @@ class MainScreen extends StatelessWidget {
         fontSize: 18,
       ),
       onChange: (index) {
-        print("TTT index $index");
       },
       buttonSingleColor: Colors.transparent,
       buttonContent: Text(
@@ -192,140 +187,3 @@ class MainScreen extends StatelessWidget {
             ));
   }
 }
-/* Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(Icons.close)),
-                    ]),
-                    Text(
-                      "Miqdori",
-                      style:
-                          TextStyle(color: AppColors.fontPrimary, fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Image.network(
-                            width: 48,
-                            height: 48,
-                            /*data.ccy == 'EUR' ? 'https://uxwing.com/wp-content/themes/uxwing/download/flags-landmarks/europe-flag-icon.png':*/
-                            "https://flagpedia.net/data/flags/h80/uz.png"),
-                        SizedBox(width: 24),
-                        Text(
-                          /*data.ccy ??*/
-                          "UZS",
-                          style: TextStyle(
-                              color: AppColors.fontPrimary, fontWeight: FontWeight.w700, fontSize: 16),
-                        ),
-                        SizedBox(width: 24),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                  filled: true,
-                                  counterText: "",
-                                  fillColor: Colors.grey.withAlpha(70),
-                                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                                      borderSide: BorderSide.none)),
-                              textAlign: TextAlign.end,
-                              style: TextStyle(color: AppColors.fontPrimary, fontWeight: FontWeight.w600),
-                              showCursor: false,
-                              maxLines: 1,
-                              maxLength: 10,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: Colors.grey,
-                            thickness: 1,
-                          ),
-                        ),
-                        Container(
-                          height: 48,
-                          width: 48,
-                          decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.fontTernary),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: Colors.grey,
-                            thickness: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 24),
-
-                    Text(
-                      "Konvertatsiya qilingan miqdor",
-                      style: TextStyle(
-                          color: AppColors.fontSecondary, fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(height: 12),
-
-                    Row(
-                      children: [
-                        Image.network(
-                            width: 48,
-                            height: 48,
-                            /*data.ccy == 'EUR' ? 'https://uxwing.com/wp-content/themes/uxwing/download/flags-landmarks/europe-flag-icon.png':*/
-                            "https://flagpedia.net/data/flags/h80/uz.png"),
-                        SizedBox(width: 24),
-                        Text(
-                          /*data.ccy ??*/
-                          "UZS",
-                          style: TextStyle(
-                              color: AppColors.fontPrimary, fontWeight: FontWeight.w700, fontSize: 16),
-                        ),
-                        SizedBox(width: 24),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: TextField(
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                  filled: true,
-                                  counterText: "",
-                                  fillColor: Colors.grey.withAlpha(70),
-                                  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                                      borderSide: BorderSide.none)),
-                              textAlign: TextAlign.end,
-                              style: TextStyle(color: AppColors.fontSecondary, fontWeight: FontWeight.w600),
-                              showCursor: false,
-                              maxLines: 1,
-                              maxLength: 10,
-                              keyboardType: TextInputType.number,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 24),
-                  ],
-                ),
-              ),
-            )*/

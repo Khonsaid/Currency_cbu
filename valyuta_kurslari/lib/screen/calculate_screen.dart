@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:valyuta_kurslari/util/extensions.dart';
 
 import '../bloc/calculate/calculate_bloc.dart';
 import '../data/data/currency_data.dart';
@@ -12,8 +15,29 @@ class CalculateScreen extends StatefulWidget {
   State<CalculateScreen> createState() => _CalculateScreenState();
 }
 
-class _CalculateScreenState extends State<CalculateScreen> {
+class _CalculateScreenState extends State<CalculateScreen> with SingleTickerProviderStateMixin{
   final TextEditingController _controller = TextEditingController();
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500), // 0.5 sekundlik animatsiya
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _rotateIcon() {
+    _animationController.forward(from: 0); // Har safar qaytadan boshlash
+    context.read<CalculateBloc>().add(SwipeConvertEvent()); // Bloc event yuborish
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +61,7 @@ class _CalculateScreenState extends State<CalculateScreen> {
               children: [
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   Text(
-                    "1 ${state.selectedData?.ccy} = ${state.selectedData?.rate} UZS",
+                    "1 ${state.selectedData?.ccy} = ${state.selectedData?.rate?.formatToMoney()} UZS",
                     style: TextStyle(color: AppColors.fontTernary, fontSize: 16, fontWeight: FontWeight.w800),
                   ),
                   IconButton(
@@ -48,7 +72,11 @@ class _CalculateScreenState extends State<CalculateScreen> {
                 ]),
                 SizedBox(height: 12),
                 Text(
-                  "Miqdori",
+                  state.lang == 'uz'
+                      ? 'Qiymati'
+                      : state.lang == 'ru'
+                      ? 'Номинал'
+                      : 'Quantity',
                   style: TextStyle(color: AppColors.fontPrimary, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 12),
@@ -92,7 +120,6 @@ class _CalculateScreenState extends State<CalculateScreen> {
                           maxLength: 10,
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
-                            // Agar kiritilgan qiymat 0 bilan boshlangan bo'lsa
                             if (value.isNotEmpty && value.startsWith('0')) {
                               _controller.text = '';
                               _controller.selection =
@@ -100,6 +127,7 @@ class _CalculateScreenState extends State<CalculateScreen> {
                               return;
                             }
 
+                            // Agar kiritilgan qiymat 0 bilan boshlangan bo'lsa
                             context.read<CalculateBloc>().add(InputSumEvent(value));
                           },
                         ),
@@ -118,15 +146,20 @@ class _CalculateScreenState extends State<CalculateScreen> {
                         thickness: 1,
                       ),
                     ),
-                    Container(
-                      height: 48,
-                      width: 48,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.fontTernary),
-                      child: IconButton(
-                        icon: Icon(Icons.swap_horiz, color: Colors.white),
-                        onPressed: () {
-                          context.read<CalculateBloc>().add(SwipeConvertEvent());
-                        },
+                    AnimatedBuilder(
+                      animation: _animationController,
+                      builder: (context, child) {
+                        return Transform.rotate(
+                          angle: _animationController.value * pi,
+                          child: child,
+                        );
+                      },
+                      child: Container(
+                        height: 48,
+                        width: 48,
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.fontTernary),
+                        child: IconButton(
+                            icon: Icon(Icons.swap_horiz, color: Colors.white), onPressed: _rotateIcon),
                       ),
                     ),
                     Expanded(
@@ -139,7 +172,11 @@ class _CalculateScreenState extends State<CalculateScreen> {
                 ),
                 SizedBox(height: 24),
                 Text(
-                  "Konvertatsiya qilingan miqdor",
+                  state.lang == 'uz'
+                      ? 'Konvertatsiya qilingan qiymati'
+                      : state.lang == 'ru'
+                      ? 'Конвертируемая номинал'
+                      : 'Convertible face value',
                   style: TextStyle(color: AppColors.fontSecondary, fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 12),
@@ -165,13 +202,13 @@ class _CalculateScreenState extends State<CalculateScreen> {
                     SizedBox(width: 32),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(12)),
                           color: Colors.grey.withAlpha(70),
                         ),
                         child: Text(
-                          state.convertedSum ?? "0.00",
+                          state.convertedSum?.formatToMoney() ?? "0",
                           textAlign: TextAlign.end,
                           style: TextStyle(
                             color: AppColors.fontSecondary,
